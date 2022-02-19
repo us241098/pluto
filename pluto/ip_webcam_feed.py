@@ -7,6 +7,7 @@ import time
 import json
 import threading
 import socket
+
 class MobileFeed:
     def __init__(self):
         self.video_url = "http://192.168.29.24:8080/shot.jpg"
