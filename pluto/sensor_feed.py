@@ -6,11 +6,11 @@ import imutils
 import time
 import json
 import threading
-
+import socket
 class MobileFeed:
     def __init__(self):
-        self.video_url = "http://192.168.1.48:8080/shot.jpg"
-        self.sensors_url = "http://192.168.1.48:8080/sensors.json"
+        self.video_url = "http://192.168.29.24:8080/shot.jpg"
+        self.sensors_url = "http://192.168.29.24:8080/sensors.json"
         self.video_feed = None
         self.sensors_feed = None
 
@@ -45,13 +45,19 @@ class MobileFeed:
         current_time = time.time()
         threading.Thread(target=self.get_sensors_feed()).start()
         threading.Thread(target=self.get_video_feed()).start()
-        api_response = {"video": self.video_feed, "sensors": self.sensors_feed, "timestamp": current_time}
+        api_response = { "sensors": self.sensors_feed, "timestamp": current_time}
+        print(api_response)
         #api_response = {"timestamp": current_time,"img": img, "accel": accel_list, "gyro": gyro_list, "mag": mag_list, "prox": prox_list, "gravity": gravity_list, "linear_accel": linear_accel_list, "rotation_vector": rotation_vector_list}
-        return api_response
+        byte_message = bytes(str(api_response), "utf-8")
+        opened_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        opened_socket.sendto(byte_message, ("127.0.0.1", 6969))
+        print("y")
+        #return api_response
 
     def loop(self):
         while True:
-            return self.run()
+            print("yy")
+            self.run()
 
 sen_obj = MobileFeed()
 print("[INFO] Starting the feed...")
